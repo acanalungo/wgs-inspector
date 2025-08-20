@@ -1,18 +1,18 @@
 
-IMAGE_VERSION=0.0.10
+IMAGE_VERSION=0.0.1
 
 docker build \
     -f Dockerfile \
-    -t wgs-inspector-dev:$IMAGE_VERSION \
+    -t wgs-inspector:$IMAGE_VERSION \
     --progress plain \
     .
 
-docker tag wgs-inspector-dev:$IMAGE_VERSION \
-	   acanalungo/wgs-inspector-dev:$IMAGE_VERSION
+docker tag wgs-inspector:$IMAGE_VERSION \
+	   acanalungo/wgs-inspector:$IMAGE_VERSION
 
-docker tag wgs-inspector-dev:$IMAGE_VERSION \
-           acanalungo/wgs-inspector-dev:latest
+docker tag wgs-inspector:$IMAGE_VERSION \
+           acanalungo/wgs-inspector:latest
 
-docker push acanalungo/wgs-inspector-dev:$IMAGE_VERSION
+docker push acanalungo/wgs-inspector:$IMAGE_VERSION
 
-docker push acanalungo/wgs-inspector-dev:latest
+docker push acanalungo/wgs-inspector:latest

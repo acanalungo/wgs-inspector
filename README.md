@@ -1,4 +1,4 @@
-# wgs-inspector-dev
+# WGS Inspector
 
 ### **Requirements**
 
@@ -11,7 +11,7 @@
 ### **Usage**
 
 *On your host machine*
-- Clone the repository: `git clone https://github.com/acanalungo/wgs-inspector-dev.git`.
+- Clone the repository: `git clone https://github.com/acanalungo/wgs-inspector.git`.
 - Move your VCF file to the `user_data` directory of the repository.
 - Run the container: `./run_container.sh` (this will pull the image if you haven't already).
 

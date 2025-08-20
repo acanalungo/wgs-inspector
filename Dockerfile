@@ -61,7 +61,7 @@ RUN wget --execute=robots=off --recursive --span-hosts --accept=zip --no-directo
 
 # v0.0.4 STOPS HERE
 
-ARG APP_DIR=/opt/wgs-inspector-dev
+ARG APP_DIR=/opt/wgs-inspector
 ARG USER_DATA_DIR=$APP_DIR/user_data
 ARG CONTAINER_VEP_CACHE_DIR=/opt/vep_cache
 
