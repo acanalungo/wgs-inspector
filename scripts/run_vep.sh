@@ -41,7 +41,7 @@ $VEP_PATH/vep -i $FILTERED_VCF_COMPRESSED \
               --af_gnomad --max_af \
               --canonical --mane \
               --plugin REVEL,file=$REVEL_PLUGIN_DATA_PATH \
-              --fork 8
+              --fork $(nproc)
 
 echo "Compressing ${OUTPUT_VCF}..."
 
