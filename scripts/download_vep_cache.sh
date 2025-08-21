@@ -1,3 +1,4 @@
+#!/bin/bash
 
 CONTAINER_VEP_CACHE_DIR=/opt/vep_cache
 
