@@ -2,7 +2,7 @@
 
 ### **Requirements**
 
-- OS: Linux or macOS
+- OS: Linux, macOS, or Windows (with WSL or Docker Desktop)
 - Hardware: **at least 60GB** of free hard drive space for the VEP cache
 - Packages:
   - Git (https://github.com/git-guides/install-git)
