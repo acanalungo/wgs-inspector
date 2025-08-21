@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 CONTAINER_VEP_CACHE_DIR=/opt/vep_cache
 
 VEP_RELEASE=114
