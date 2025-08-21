@@ -1,8 +1,12 @@
 # WGS Inspector
 
+WGS Inspector is an easy-to-use tool for extracting relevant variants from Whole Genome Sequencing (WGS) raw data files.
+Under the hood, the processing pipeline relies on standard bioinformatics packages like Ensembl VEP and pysam for variant
+annotation and parsing, as well as data from the gnomAD, ClinVar, and REVEL datasets for allele frequency, clinical
+insights, and *in silico* pathogenicity prediction, respectively. The tool is delivered as a container image to minimize
+setup time and ensure portability.
 
-
-The general idea here is to downsample from the approximately 5 million variants -- positions where your genotype *varies*
+The general idea is to downsample from the approximately 5 million variants -- positions where your genotype *varies*
 from the reference -- in your genome to around 1,000 variants which are most likely to be relevant to your health, ideally
 something you could look through in a day or two. Of course, such a simplification will always miss something, but I think
 this represents the minimal amount of time and effort invested to glean most of the interesting insights based on the best 
@@ -10,11 +14,21 @@ available data. After you've downloaded the necessary cache data (~3 hours depen
 able to process an entire genome's worth of information in around an hour; the whole ordeal should be doable in an
 afternoon.
 
-This tool currently handles only genomic data from Variant Call Format (VCF) files, as that is the most efficient way to
-transmit and analyze the information. It will not work with sequence data formats like SAM, BAM, CRAM, FASTQ, or FASTA.
+The output of the tool is just a CSV file with different variants which meet certain criteria for relevancy, such as 
+allele frequency being below a certain threshold (rarity of variant), the variant being labeled as pathogenic or 
+likely pathogenic in a clinical database, or a sufficiently high-confidence prediction of pathogenicity by an *in silico*
+model. Each variant will be labeled with the above information as well as its corresponding gene, and information about 
+its position in the genome and variant type. A good way to explore this data more graphically and intuitively is to use
+[Gene.iobio](https://gene.iobio.io/), where you can input your raw data and search for the individual genes you find in 
+the CSV output.
 
 *DISCLAIMER: I am not a doctor and the output of the tool should not be considered to be medical advice. This is for 
 educational and recreational purposes only.*
+
+### **File Formats**
+
+This tool currently handles only genomic data from Variant Call Format (VCF) files, as that is the most efficient way to
+transmit and analyze the information. It will not work with sequence data formats like SAM, BAM, CRAM, FASTQ, or FASTA.
 
 ### **Supported WGS Providers**
 
@@ -51,8 +65,14 @@ confirmed to run smoothly.
   step should finish in under an hour.
 - When VEP is finished, you'll be left with an annotated VCF file called `vep_<sample_name>.vcf.gz`. To extract the
   relevant variants from this file, run the parser by running: `python3 annotation_parser.py user_data/vep_<sample_name>.vcf.gz`.
-  Optionally, you can use the `--gnomad` and `--revel` flags to override the default cutoffs for the parser, which
-  are 0.01 and 0.5, respectively. This step should finish in under ten minutes.
+  This step should finish in under ten minutes.
+- Optionally, you can use the `--gnomad` and `--revel` flags to override the default cutoffs for the parser, which
+  are 0.01 and 0.5, respectively. The `--gnomad` cutoff corresponds to allele frequency as a percentage in decimal format, such
+  that a cutoff of 0.01 means only variants rarer than 1% are included, 0.001 means only variants rarer than 0.1% are included,
+  and so on. The `--revel` cutoff corresponds to the *in silico* pathogenicity prediction from the REVEL database, which ranges
+  from 0.0 (for lowest likelihood) to 1.0 (for highest likelihood), such that a cutoff of 0.5 means only variants with a
+  pathogenicity score **higher** than 0.5 are included. See the REVEL paper (linked below) and
+  [website](https://sites.google.com/site/revelgenomics/about) for more information if you want to override this cutoff.
 - The output of the parser will be a CSV file in the `user_data` directory containing all the variants matching the
   criteria, which you can open with any spreadsheet program and explore as you wish.
 
@@ -62,8 +82,12 @@ Ensembl: https://doi.org/10.1093/nar/gkae1071
 
 Ensembl VEP: https://doi.org/10.1186/s13059-016-0974-4
 
+pysam: https://pysam.readthedocs.io/en/latest/index.html
+
 gnomAD: https://gnomad.broadinstitute.org
 
 ClinVar: https://www.ncbi.nlm.nih.gov/clinvar
 
 REVEL: https://doi.org/10.1016/j.ajhg.2016.08.016
+
+Gene.iobio: https://doi.org/10.1038/s41598-021-99752-5
