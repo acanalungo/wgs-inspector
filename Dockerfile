@@ -3,37 +3,30 @@ FROM ubuntu:22.04
 
 WORKDIR /opt
 
-RUN apt-get update && apt-get upgrade -y
-
-# Apt dependencies
-RUN apt-get install -y git gcc g++ make curl unzip wget libbz2-dev \
-	liblzma-dev cpanminus libmysqlclient-dev libcurl4-openssl-dev tabix
-
-# Perl dependencies
-RUN cpanm Archive::Zip DBI DBD::mysql LWP::Simple
-
-# Python dependencies
-RUN apt-get install -y python3.10 python3-pip
-
-RUN pip3 install pysam requests
-
-# v0.0.0 STOPS HERE
+# Apt, Perl and Python dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	git gcc g++ make curl unzip wget libbz2-dev liblzma-dev \
+	cpanminus libmysqlclient-dev libcurl4-openssl-dev tabix \
+	python3.10 python3-pip \
+    && cpanm Archive::Zip DBI DBD::mysql LWP::Simple List::MoreUtils \
+    && pip3 install --no-cache-dir pysam requests \
+    && rm -rf /var/cache/apt/archives /var/lib/apt/lists/* \
+    && rm -rf /root/.cpanm
 
 # Build bcftools
-RUN git clone --recurse-submodules https://github.com/samtools/htslib.git
-
-RUN git clone https://github.com/samtools/bcftools.git
-
-RUN cd bcftools && make && make install
-
-# v0.0.1 STOPS HERE
+RUN git clone --recurse-submodules https://github.com/samtools/htslib.git \
+    && git clone https://github.com/samtools/bcftools.git \
+    && cd bcftools && make && make install && cd .. \
+    && rm -rf bcftools/ htslib/
 
 # Build VEP with REVEL plugin
-RUN git clone https://github.com/Ensembl/ensembl-vep.git
-
-RUN cd ensembl-vep && perl INSTALL.pl --ASSEMBLY GRCh38 --AUTO ap --SPECIES homo_sapiens --PLUGINS REVEL
-
-# v0.0.2 STOPS HERE
+RUN git clone https://github.com/Ensembl/ensembl-vep.git \
+    && cd ensembl-vep && perl INSTALL.pl --ASSEMBLY GRCh38 \
+                                         --AUTO ap \
+                                         --NO_HTSLIB \
+                                         --SPECIES homo_sapiens \
+                                         --PLUGINS REVEL \
+    && rm -rf t/ .git/ biodbhts/t/data/
 
 # Download REVEL data and process for VEP
 ARG REVEL_ARCHIVE_NAME="revel-v1.3_all_chromosomes.zip"
@@ -59,8 +52,7 @@ RUN wget --execute=robots=off --recursive --span-hosts --accept=zip --no-directo
 	&& mv $PROCESSING_DIR/$PROCESSED_DATA_INDEX $PROCESSED_DATA_NEWDIR \
 	&& rm -r $PROCESSING_DIR && rm $REVEL_ARCHIVE_NAME
 
-# v0.0.4 STOPS HERE
-
+# Copy everything into the container
 ARG APP_DIR=/opt/wgs-inspector
 ARG USER_DATA_DIR=$APP_DIR/user_data
 ARG CONTAINER_VEP_CACHE_DIR=/opt/vep_cache
@@ -69,8 +61,4 @@ RUN mkdir $CONTAINER_VEP_CACHE_DIR && mkdir $APP_DIR && mkdir $USER_DATA_DIR
 
 COPY scripts src ensembl_data $APP_DIR
 
-# v0.0.5 STOPS HERE
-
 WORKDIR	$APP_DIR
-
-# 0.0.6-9 STOPS HERE
