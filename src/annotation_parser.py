@@ -110,12 +110,8 @@ class AnnotationParser:
             for transcript in vep_csq:
                 ts_split = transcript.split('|')
 
-                gene_id = ts_split[0]
-                consequence = ts_split[1]
-                gnomad_af = ts_split[2]
-                gnomad_af_max = ts_split[3]
-                clinsig = ts_split[4]
-                revel_score = ts_split[5]
+                gene_id, consequence, gnomad_af, gnomad_af_max, clinsig, \
+                    revel_score = ts_split
 
                 print(variant.chrom, variant.pos, ts_split)
 
