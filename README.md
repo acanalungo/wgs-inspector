@@ -3,8 +3,7 @@
 WGS Inspector is an easy-to-use tool for extracting relevant variants from Whole Genome Sequencing (WGS) raw data files.
 Under the hood, the processing pipeline relies on standard bioinformatics packages like Ensembl VEP and pysam for variant
 annotation and parsing, as well as data from the gnomAD, ClinVar, and REVEL datasets for allele frequency, clinical
-insights, and *in silico* pathogenicity prediction, respectively. The tool is delivered as a container image to minimize
-setup time and ensure portability.
+insights, and *in silico* pathogenicity prediction, respectively.
 
 The general idea is to downsample from the approximately 5 million variants -- positions where your genotype *varies*
 from the reference -- in your genome to around 1,000 variants which are most likely to be relevant to your health, ideally
